@@ -7,10 +7,9 @@
 #include "Touch.h"
 
 
-void processTouch();
 void initGUI();
 void detectHw();
-int buttonTouched(int bx,int by);
+void processTouch(int touch_type, int touch_x, int touch_y);
 
 
 #define testButtonsY 429
@@ -34,25 +33,13 @@ int main(int argc, char* argv[])
 {
   detectHw();
   initScreen();
-  if(touchPresent) initTouch(touchPath);
   initGUI();  
   
-  
-  while(1)
-  { 
-    if(touchPresent)
-    {
-      if(getTouch()==1)
-      {
-        processTouch();
-      }
-    } 
+  if(touchPresent)
+  {
+    runTouch(touchPath, &processTouch);
   }
-
 }
-
-
-
 
 void detectHw()
 {
@@ -110,10 +97,15 @@ void initGUI()
 
 
 
+#define buttonTouched(bx,by) ((touch_x > bx) & (touch_x < bx+buttonWidth) & (touch_y > by) & (touch_y < by+buttonHeight))
 
-
-void processTouch()
+void processTouch(int touch_type, int touch_x, int touch_y)
 { 
+  /* Check for touch start */
+  if(touch_type != TOUCH_EVENT_START)
+  {
+    return;
+  }
 
   if(buttonTouched(testButtonsX,testButtonsY))    //Button 1
   {
@@ -183,10 +175,4 @@ void processTouch()
     exit(0);
   }
 
-}
-
-
-int buttonTouched(int bx,int by)
-{
-  return ((touchX > bx) & (touchX < bx+buttonWidth) & (touchY > by) & (touchY < by+buttonHeight));
 }
