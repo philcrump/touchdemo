@@ -25,12 +25,15 @@ void processTouch(int touch_type, int touch_x, int touch_y);
 #define buttonSpaceX 105
 
 
-char touchPath[20];
+char touchPath[21];
 int touchPresent;
 
 
 int main(int argc, char* argv[])
 {
+  (void) argc;
+  (void) argv;
+
   detectHw();
   initScreen();
   initGUI();  
@@ -67,7 +70,7 @@ void detectHw()
         found=strstr(ln,"event");
         strcpy(handler,found);
         handler[6]=0;
-        sprintf(touchPath,"/dev/input/%s",handler);
+        snprintf(touchPath,21,"/dev/input/%s",handler);
         touchPresent=1;
       }
     }   
