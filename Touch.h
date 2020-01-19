@@ -59,22 +59,23 @@ void runTouch(char *touch_path, void (*touch_callback)(int type, int x, int y))
   char buf[INOTIFY_FD_BUFFER_LENGTH] __attribute__ ((aligned(8)));
   while (1)
   {
-    /* Wait for new files */
+    /* Wait for new events */
     pending_length = read(inotify_fd, buf, INOTIFY_FD_BUFFER_LENGTH);
     if (pending_length <= 0)
     {
       continue;
     }
 
-    /* Process buffer of new files */
+    /* Process buffer of new events */
     for (p = buf; p < buf + pending_length; )
     {
       event = (struct inotify_event *) p;
 
-      /* Pass filename to supplied callback */
+      /* Read data from touch file, and pass touch event to supplied callback */
       touch_type = readTouch(touch_fd);
       touch_callback(touch_type, touchX, touchY);
 
+      /* Iterate onwards */
       p += sizeof(struct inotify_event) + event->len;
     }
   }
