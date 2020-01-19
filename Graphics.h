@@ -39,13 +39,13 @@ void displayButton(char*s);
 
 void displayStr(char*s)
 {
- int p;
- p=0;
- do
- {
+  int p;
+  p=0;
+  do
+  {
     displayChar(s[p++]);
- }
- while(s[p]!=0);
+  }
+  while(s[p]!=0);
 }
 
 void displayChar(int ch)
@@ -55,20 +55,20 @@ void displayChar(int ch)
   int pix;
 
   for(row=0;row<9;row++)
-    {
+  {
     pix=font[ch][row];
     for(col=0;col<8;col++)
+    {
+      if((pix << col) & 0x80)
       {
-       if((pix << col) & 0x80)
-         {
-            setLargePixel(currentX+col*textSize,currentY+row*textSize,textSize,foreColourR,foreColourG,foreColourB);
-         }
-       else
-         { 
-            setLargePixel(currentX+col*textSize,currentY+row*textSize,textSize,backColourR,backColourG,backColourG);
-         }
+        setLargePixel(currentX+col*textSize,currentY+row*textSize,textSize,foreColourR,foreColourG,foreColourB);
+      }
+      else
+      { 
+        setLargePixel(currentX+col*textSize,currentY+row*textSize,textSize,backColourR,backColourG,backColourG);
       }
     }
+  }
 
   currentX=currentX+8*textSize;
 }
@@ -76,73 +76,73 @@ void displayChar(int ch)
 
 void displayButton(char*s)
 {
-int saveX=currentX;
-int saveY=currentY;
-for(int x=0;x<100;x++)
+  int saveX=currentX;
+  int saveY=currentY;
+  for(int x=0;x<100;x++)
   {
     setPixel(currentX+x,currentY,foreColourR,foreColourG,foreColourB);
     setPixel(currentX+x,currentY+50,foreColourR,foreColourG,foreColourB);
   }
-for(int y=0;y<50;y++)
+  for(int y=0;y<50;y++)
   {
     setPixel(currentX,currentY+y,foreColourR,foreColourG,foreColourB);
     setPixel(currentX+100,currentY+y,foreColourR,foreColourG,foreColourB);
   }
 
-gotoXY(currentX+1,currentY+18);
-textSize=2;
-displayStr("      ");
-currentX=saveX;
-int sx=50-((strlen(s)*16)/2);  
-gotoXY(currentX+sx,currentY);
-textSize=2;
-displayStr(s);
-currentX=saveX+105;
-currentY=saveY;
+  gotoXY(currentX+1,currentY+18);
+  textSize=2;
+  displayStr("      ");
+  currentX=saveX;
+  int sx=50-((strlen(s)*16)/2);  
+  gotoXY(currentX+sx,currentY);
+  textSize=2;
+  displayStr(s);
+  currentX=saveX+105;
+  currentY=saveY;
 
 }
 
 
 void gotoXY(int x, int y)
 {
-currentX=x;
-currentY=y;
+  currentX=x;
+  currentY=y;
 }
 
 void setForeColour(int R,int G,int B)
 {
-foreColourR=R;
-foreColourG=G;
-foreColourB=B;
+  foreColourR=R;
+  foreColourG=G;
+  foreColourB=B;
 }
 
 void setBackColour(int R,int G,int B)
 {
-backColourR=R;
-backColourG=G;
-backColourB=B;
+  backColourR=R;
+  backColourG=G;
+  backColourB=B;
 }
 
 void clearScreen()
 {
   for(int y=0;y<screenYsize;y++)
-	  {
-      for(int x=0;x<screenXsize;x++)
-        {
-        setPixel(x,y,backColourR,backColourG,backColourB);
-        }
-  	}
+  {
+    for(int x=0;x<screenXsize;x++)
+    {
+      setPixel(x,y,backColourR,backColourG,backColourB);
+    }
+  }
 }
 
 void setPixel(int x, int y, int R, int G, int B)
 {
-if((x<800)&(y<480))
+  if((x<800)&(y<480))
   {
-  int p=(x+screenXsize*y)*4;
-  	memset(fbp+p,B,1);  //Blue
-  	memset(fbp+p+1,G,1);  //Green
-  	memset(fbp+p+2,R,1);  //Red
-  	memset(fbp+p+3,0x80,1);  //A
+    int p=(x+screenXsize*y)*4;
+    memset(fbp+p,B,1);  //Blue
+    memset(fbp+p+1,G,1);  //Green
+    memset(fbp+p+2,R,1);  //Red
+    memset(fbp+p+3,0x80,1);  //A
   }
 
 }
@@ -150,12 +150,12 @@ if((x<800)&(y<480))
 void setLargePixel(int x, int y, int size, int R, int G, int B)
 {
   for (int px=0;px<size;px++)
+  {
+    for(int py=0;py<size;py++)
     {
-      for(int py=0;py<size;py++)
-        {
-        setPixel(x+px,y+py,R,G,B);
-        }
+      setPixel(x+px,y+py,R,G,B);
     }
+  }
 }
 
 void closeScreen(void)
@@ -198,12 +198,12 @@ int initScreen(void)
   screenSize = finfo.smem_len;
   fbp = (char*)mmap(0, screenSize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
                     
-   if ((int)fbp == -1) 
-   {
+  if ((int)fbp == -1) 
+  {
     return 0;
-   }
+  }
   else 
-   {
+  {
     return 1;
-   }
+  }
 }
