@@ -24,6 +24,10 @@ void processTouch(int touch_type, int touch_x, int touch_y);
 #define buttonWidth 100
 #define buttonSpaceX 105
 
+#define sliderX       50
+#define sliderY       90
+#define sliderWidth   700
+#define sliderHeight  50
 
 char touchPath[21];
 int touchPresent;
@@ -96,86 +100,104 @@ void initGUI()
   
   gotoXY(exitButtonX,exitButtonY);
   displayButton("Exit");
+
+  gotoXY(sliderX,sliderY);
+  displayBox(sliderWidth, sliderHeight);
 }
 
 
-
+#define areaTouched(ax, aw, ay, ah) ((touch_x > ax) & (touch_x < ax+aw) & (touch_y > ay) & (touch_y < ay+ah))
 #define buttonTouched(bx,by) ((touch_x > bx) & (touch_x < bx+buttonWidth) & (touch_y > by) & (touch_y < by+buttonHeight))
 
 void processTouch(int touch_type, int touch_x, int touch_y)
-{ 
-  /* Check for touch start */
-  if(touch_type != TOUCH_EVENT_START)
+{
+  if(touch_type == TOUCH_EVENT_MOVE) /* Sliders don't care about touch start & end */
   {
-    return;
-  }
+    if(areaTouched(sliderX, sliderWidth, sliderY, sliderHeight))
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
 
-  if(buttonTouched(testButtonsX,testButtonsY))    //Button 1
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 1 Pressed");
-    return;         
-  }      
-  if(buttonTouched(testButtonsX+buttonSpaceX,testButtonsY))    //Button 2
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 2 Pressed");
-    return;
-  }
-        
-  if(buttonTouched(testButtonsX+buttonSpaceX*2,testButtonsY))  // Button 3 
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 3 Pressed");
-    return;
-  }
-        
-  if(buttonTouched(testButtonsX+buttonSpaceX*3,testButtonsY))    // Button 4
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 4 Pressed");
-    return;
-  }
-         
-  if(buttonTouched(testButtonsX+buttonSpaceX*4,testButtonsY))    //Button 5
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 5 Pressed");
-    return;     
-  }      
+      /* Create message */
+      double fraction = 100.0 * ((double)(touch_x - sliderX) / sliderWidth);
+      char *message;
+      asprintf(&message, "%4.2f%% (% 3d)", fraction, (touch_x - sliderX));
 
-  if(buttonTouched(testButtonsX+buttonSpaceX*5,testButtonsY))    //Button 6 
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 6 Pressed");
-    return;
-  } 
-           
-  if(buttonTouched(testButtonsX+buttonSpaceX*6,testButtonsY))   //Button 7
-  {
-    gotoXY(textX,textY);
-    setForeColour(255,0,0);
-    textSize=3;
-    displayStr("Button 7 Pressed");
-    return;
-  }      
-
-  if(buttonTouched(exitButtonX,exitButtonY))
-  {
-    clearScreen();
-    exit(0);
+      displayStr(message);
+      free(message);
+      return;
+    }
   }
+  else if(touch_type == TOUCH_EVENT_START) /* Buttons are triggered on touch start */
+  {
+    if(buttonTouched(testButtonsX,testButtonsY))    //Button 1
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 1 Pressed");
+      return;
+    }
 
+    if(buttonTouched(testButtonsX+buttonSpaceX,testButtonsY))    //Button 2
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 2 Pressed");
+      return;
+    }
+
+    if(buttonTouched(testButtonsX+buttonSpaceX*2,testButtonsY))  // Button 3 
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 3 Pressed");
+      return;
+    }
+
+    if(buttonTouched(testButtonsX+buttonSpaceX*3,testButtonsY))    // Button 4
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 4 Pressed");
+      return;
+    }
+
+    if(buttonTouched(testButtonsX+buttonSpaceX*4,testButtonsY))    //Button 5
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 5 Pressed");
+      return;
+    }
+
+    if(buttonTouched(testButtonsX+buttonSpaceX*5,testButtonsY))    //Button 6 
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 6 Pressed");
+      return;
+    }
+
+    if(buttonTouched(testButtonsX+buttonSpaceX*6,testButtonsY))   //Button 7
+    {
+      gotoXY(textX,textY);
+      setForeColour(255,0,0);
+      textSize=3;
+      displayStr("Button 7 Pressed");
+      return;
+    }
+
+    if(buttonTouched(exitButtonX,exitButtonY))
+    {
+      clearScreen();
+      exit(0);
+    }
+  }
 }

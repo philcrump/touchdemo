@@ -102,6 +102,25 @@ void displayButton(char*s)
 
 }
 
+void displayBox(int height_x, int height_y)
+{
+  int saveX=currentX;
+  int saveY=currentY;
+
+  for(int x=0;x<height_x;x++)
+  {
+    setPixel(currentX+x,currentY,foreColourR,foreColourG,foreColourB);
+    setPixel(currentX+x,currentY+height_y,foreColourR,foreColourG,foreColourB);
+  }
+  for(int y=0;y<height_y;y++)
+  {
+    setPixel(currentX,currentY+y,foreColourR,foreColourG,foreColourB);
+    setPixel(currentX+height_x,currentY+y,foreColourR,foreColourG,foreColourB);
+  }
+
+  currentX=saveX;
+  currentY=saveY;
+}
 
 void gotoXY(int x, int y)
 {
